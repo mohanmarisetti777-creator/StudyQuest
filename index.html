@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StudyQuest</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <p class="site-header__title">StudyQuest</p>
+      <nav id="main-nav" class="nav" aria-label="Main">
+        <a class="nav__link" href="#dashboard" data-view="dashboard"><span class="nav__index" aria-hidden="true">01</span><span>Dashboard</span></a>
+        <a class="nav__link" href="#subjects" data-view="subjects"><span class="nav__index" aria-hidden="true">02</span><span>Subjects</span></a>
+        <a class="nav__link" href="#tasks" data-view="tasks"><span class="nav__index" aria-hidden="true">03</span><span>Tasks</span></a>
+        <a class="nav__link" href="#timer" data-view="timer"><span class="nav__index" aria-hidden="true">04</span><span>Focus Timer</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <div id="storage-warning" class="banner" role="alert" hidden>Storage is unavailable. Your data will be lost when you close this tab.</div>
+
+  <main class="container">
+    <section id="view-dashboard" class="view" aria-labelledby="dashboard-title">
+      <div class="view__head">
+        <p class="eyebrow">Your study workspace</p>
+        <h1 id="dashboard-title" class="view__title view__title--display">Make progress. Every day.</h1>
+      </div>
+      <div id="dashboard-content" class="dashboard"></div>
+    </section>
+
+    <section id="view-subjects" class="view" aria-labelledby="subjects-title" hidden>
+      <div class="view__head">
+        <p class="eyebrow">Your courses</p>
+        <h1 id="subjects-title" class="view__title">Subjects</h1>
+      </div>
+      <form id="subject-form" class="card form" novalidate>
+        <div class="field">
+          <label for="subject-name">Name</label>
+          <input id="subject-name" name="name" type="text" maxlength="40" required autocomplete="off" aria-describedby="subject-name-error">
+          <p class="field__error" id="subject-name-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="subject-color">Color</label>
+          <input id="subject-color" name="color" type="color" value="#4f46e5" required aria-describedby="subject-color-error">
+          <p class="field__error" id="subject-color-error" hidden></p>
+        </div>
+        <div class="form__actions">
+          <button id="subject-submit" class="btn btn--primary" type="submit">Add subject</button>
+          <button id="subject-cancel" class="btn btn--ghost" type="button" hidden>Cancel</button>
+        </div>
+      </form>
+      <ul id="subject-list" class="list"></ul>
+      <p id="subject-empty" class="empty-state" hidden>No subjects yet. Add your first subject above.</p>
+    </section>
+
+    <section id="view-tasks" class="view" aria-labelledby="tasks-title" hidden>
+      <div class="view__head">
+        <p class="eyebrow">Your work</p>
+        <h1 id="tasks-title" class="view__title">Tasks</h1>
+      </div>
+      <p id="task-needs-subject" class="notice" hidden>Create a subject first. <a href="#subjects">Go to Subjects</a></p>
+      <form id="task-form" class="card form" novalidate>
+        <div class="field form__wide">
+          <label for="task-title">Title</label>
+          <input id="task-title" name="title" type="text" maxlength="100" required autocomplete="off" aria-describedby="task-title-error">
+          <p class="field__error" id="task-title-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="task-subject">Subject</label>
+          <select id="task-subject" name="subjectId" required aria-describedby="task-subject-error"></select>
+          <p class="field__error" id="task-subject-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="task-due">Due date (optional)</label>
+          <input id="task-due" name="dueDate" type="date" aria-describedby="task-due-error">
+          <p class="field__error" id="task-due-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="task-priority">Priority</label>
+          <select id="task-priority" name="priority" required aria-describedby="task-priority-error">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+          <p class="field__error" id="task-priority-error" hidden></p>
+        </div>
+        <div class="form__actions form__wide">
+          <button id="task-submit" class="btn btn--primary" type="submit">Add task</button>
+          <button id="task-cancel" class="btn btn--ghost" type="button" hidden>Cancel</button>
+        </div>
+      </form>
+      <div class="filters">
+        <div class="field">
+          <label for="filter-subject">Filter by subject</label>
+          <select id="filter-subject"></select>
+        </div>
+        <div class="field">
+          <label for="filter-status">Filter by status</label>
+          <select id="filter-status">
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      </div>
+      <ul id="task-list" class="list"></ul>
+      <p id="task-empty" class="empty-state" hidden></p>
+    </section>
+
+    <section id="view-timer" class="view" aria-labelledby="timer-title" hidden>
+      <div class="view__head">
+        <p class="eyebrow">Pomodoro</p>
+        <h1 id="timer-title" class="view__title">Focus Timer</h1>
+      </div>
+      <div class="timer">
+        <div class="timer__modes" role="group" aria-label="Timer mode">
+          <button id="timer-mode-focus" class="btn btn--ghost" type="button" aria-pressed="true">Focus</button>
+          <button id="timer-mode-break" class="btn btn--ghost" type="button" aria-pressed="false">Break</button>
+        </div>
+        <p id="timer-display" class="timer__display">25:00</p>
+        <div id="timer-progress" class="progress" role="progressbar" aria-label="Time elapsed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress__fill"></div></div>
+        <div class="timer__controls">
+          <button id="timer-toggle" class="btn btn--primary" type="button">Start</button>
+          <button id="timer-reset" class="btn btn--ghost" type="button">Reset</button>
+        </div>
+        <p id="timer-status" class="timer__status" aria-live="polite"></p>
+        <p id="timer-sessions-today" class="muted">Sessions today: 0</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+
+  <dialog id="confirm-dialog" class="dialog" aria-labelledby="confirm-message">
+    <p class="eyebrow">Confirm action</p>
+    <p id="confirm-message" class="dialog__message"></p>
+    <div class="dialog__actions">
+      <button id="confirm-no" class="btn btn--ghost" type="button" autofocus>No</button>
+      <button id="confirm-yes" class="btn btn--danger" type="button">Yes</button>
+    </div>
+  </dialog>
+
+  <script src="js/utils.js" defer></script>
+  <script src="js/ui.js" defer></script>
+  <script src="js/storage.js" defer></script>
+  <script src="js/progress.js" defer></script>
+  <script src="js/subjects.js" defer></script>
+  <script src="js/tasks.js" defer></script>
+  <script src="js/timer.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
